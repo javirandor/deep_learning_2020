@@ -12,7 +12,7 @@ def main(in_video: str,
          num_steps: int,
          style_weight: int,
          content_weight: int,
-         previous_weight: int,
+         previous_weight: float,
          output_filename: str):
 
     print("Style Weight = {}".format(style_weight))
@@ -84,6 +84,8 @@ if __name__ == "__main__":
     style_weight = args.style_weight
     previous_weight = args.previous_weight
     output_file = args.output_filename
+
+    print(style_weight)
 
     # Run main
     main(input_video, style_img, output_path, stabilizer, num_steps, style_weight, content_weight, previous_weight, output_file)

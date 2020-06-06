@@ -116,6 +116,7 @@ def get_input_optimizer(input_img):
 def run_style_transfer_no_st(cnn, normalization_mean, normalization_std,
                              video_frames, style_img, input_frames, output_path, output_filename,
                              num_steps, style_weight, content_weight):
+
     """Run the style transfer without stabilizer"""
 
     resulting_frames = []
@@ -225,15 +226,15 @@ def run_style_transfer_st1(cnn, normalization_mean, normalization_std,
 
                 if index != 0:
                     previous_score *= previous_weight
-
-                if index == 0:
-                    loss = style_score + content_score
-                    loss.backward()
-                else:
                     loss = style_score + content_score + previous_score
                     loss.backward()
 
+                else:
+                    loss = style_score + content_score
+                    loss.backward()
+
                 run[0] += 1
+
                 if run[0] % 50 == 0 and index != 0:
                     print("run {}:".format(run))
                     print('Style Loss : {:4f} Content Loss: {:4f} Flow Loss: {:4f}'.format(
@@ -243,6 +244,7 @@ def run_style_transfer_st1(cnn, normalization_mean, normalization_std,
                     print("run {}:".format(run))
                     print('Style Loss : {:4f} Content Loss: {:4f}'.format(style_score.item(), content_score.item()))
                     print()
+
                 return style_score + content_score + previous_score
 
             optimizer.step(closure)
