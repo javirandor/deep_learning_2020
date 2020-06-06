@@ -12,7 +12,8 @@ def main(in_video: str,
          num_steps: int,
          style_weight: int,
          content_weight: int,
-         previous_weight: int):
+         previous_weight: int,
+         output_filename: str):
 
     print("Style Weight = {}".format(style_weight))
     # Load video
@@ -42,7 +43,8 @@ def main(in_video: str,
                                                       num_steps=num_steps,
                                                       style_weight=style_weight,
                                                       content_weight=content_weight,
-                                                      output_path=output_path)
+                                                      output_path=output_path,
+                                                      output_filename=output_filename)
 
     elif stabilizer == 1:
         transformed_frames = run_style_transfer_st1(cnn=cnn,
@@ -55,7 +57,8 @@ def main(in_video: str,
                                                     style_weight=style_weight,
                                                     content_weight=content_weight,
                                                     previous_weight=previous_weight,
-                                                    output_path=output_path)
+                                                    output_path=output_path,
+                                                    output_filename=output_filename)
 
     print("Style video transfer successfully completed.")
 
@@ -69,6 +72,7 @@ if __name__ == "__main__":
     parser.add_argument("-cw", "--content_weight", type=int, required=False, default=1)
     parser.add_argument("-sw", "--style_weight", type=int, required=False, default=1000000)
     parser.add_argument("-pw", "--previous_weight", type=float, required=False, default=0.5)
+    parser.add_argument("-of", "--output_filename", type=str, required=False, default='frame')
 
     args = parser.parse_args()
     input_video = args.video
@@ -79,6 +83,7 @@ if __name__ == "__main__":
     content_weight = args.content_weight
     style_weight = args.style_weight
     previous_weight = args.previous_weight
+    output_file = args.output_filename
 
     # Run main
-    main(input_video, style_img, output_path, stabilizer, num_steps, style_weight, content_weight, previous_weight)
+    main(input_video, style_img, output_path, stabilizer, num_steps, style_weight, content_weight, previous_weight, output_file)

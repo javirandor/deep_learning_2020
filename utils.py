@@ -46,6 +46,7 @@ def generate_input_frames(video_frames: list):
 
 def store_frame (output_path: str,
                  index: int,
+                 filename: str,
                  frame):
 
     # Check if frames folder exists. If not, create it.
@@ -55,4 +56,4 @@ def store_frame (output_path: str,
     image = frame.cpu().clone()  # we clone the tensor to not do changes on it
     image = image.squeeze(0)  # remove the fake batch dimension
     image = unloader(image).convert('RGB')
-    image.save(os.path.join(output_path, 'frames/frame{}.jpg'.format(index)))
+    image.save(os.path.join(output_path, 'frames/{}{}.jpg'.format(filename, index)))

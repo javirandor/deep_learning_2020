@@ -6,6 +6,7 @@ import torch.optim as optim
 from loss import StyleLoss, ContentLoss, PreviousLoss
 from utils import store_frame
 
+
 # ================================== NORMALIZATION ================================== #
 
 
@@ -78,8 +79,7 @@ def get_style_model_and_losses(cnn, normalization_mean, normalization_std, stabi
             model.add_module("style_loss_{}".format(i), style_loss)
             style_losses.append(style_loss)
 
-        if name in previous_layers and stabilizer == 1 and previous_styled_img!=None:
-            # add previous loss:
+        if name in previous_layers and stabilizer == 1 and previous_styled_img is not None:
             target = model(previous_styled_img).detach()
             previous_loss = PreviousLoss(target)
             model.add_module("previous_loss_{}".format(i), previous_loss)
@@ -114,8 +114,8 @@ def get_input_optimizer(input_img):
 # ================================== STYLE TRANSFER ================================== #
 
 def run_style_transfer_no_st(cnn, normalization_mean, normalization_std,
-                             video_frames, style_img, input_frames, output_path, num_steps,
-                             style_weight, content_weight):
+                             video_frames, style_img, input_frames, output_path, output_filename,
+                             num_steps, style_weight, content_weight):
     """Run the style transfer without stabilizer"""
 
     resulting_frames = []
@@ -167,15 +167,15 @@ def run_style_transfer_no_st(cnn, normalization_mean, normalization_std,
 
         # a last correction...
         input_frame.data.clamp_(0, 1)
-        store_frame(output_path, index, input_frame) # Store frame
+        store_frame(output_path, index, output_filename, input_frame)  # Store frame
         resulting_frames.append(input_frame)
 
     return resulting_frames
 
 
 def run_style_transfer_st1(cnn, normalization_mean, normalization_std,
-                           video_frames, style_img, input_frames, output_path, num_steps,
-                           style_weight, content_weight, previous_weight):
+                           video_frames, style_img, input_frames, output_path, output_filename,
+                           num_steps, style_weight, content_weight, previous_weight):
     """Run the style transfer with the first stabilizer"""
 
     resulting_frames = []
@@ -249,7 +249,7 @@ def run_style_transfer_st1(cnn, normalization_mean, normalization_std,
 
         # a last correction...
         input_frame.data.clamp_(0, 1)
-        store_frame(output_path, index, input_frame)  # Store frame
+        store_frame(output_path, index, output_filename, input_frame)  # Store frame
         resulting_frames.append(input_frame)
 
     return resulting_frames
