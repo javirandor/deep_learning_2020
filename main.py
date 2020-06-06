@@ -14,6 +14,7 @@ def main(in_video: str,
          content_weight: int,
          previous_weight: int):
 
+    print("Style Weight = {}".format(style_weight))
     # Load video
     video_frames = video_loader(in_video)
 
@@ -66,7 +67,7 @@ if __name__ == "__main__":
     parser.add_argument("-s", "--stabilizer", type=int, required=False, choices=[0, 1, 2], default=0)
     parser.add_argument("-ns", "--num_steps", type=int, required=False, default=200)
     parser.add_argument("-cw", "--content_weight", type=int, required=False, default=1)
-    parser.add_argument("-sw", "--style_weight", type=int, required=False, default=100000)
+    parser.add_argument("-sw", "--style_weight", type=int, required=False, default=1000000)
     parser.add_argument("-pw", "--previous_weight", type=float, required=False, default=0.5)
 
     args = parser.parse_args()
