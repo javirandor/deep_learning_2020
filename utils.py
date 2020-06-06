@@ -41,6 +41,7 @@ def generate_input_frames(video_frames: list):
         input_frames.append(frame.clone())
         # if you want to use white noise instead uncomment the below line:
         # input_frames.append(torch.randn(frame.data.size(), device=device))
+    return input_frames
 
 
 def store_frames (output_path: str,
