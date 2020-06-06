@@ -4,6 +4,7 @@ from constants import device, content_layers_default, style_layers_default, prev
 import copy
 import torch.optim as optim
 from loss import StyleLoss, ContentLoss, PreviousLoss
+from utils import store_frame
 
 # ================================== NORMALIZATION ================================== #
 
@@ -113,7 +114,7 @@ def get_input_optimizer(input_img):
 # ================================== STYLE TRANSFER ================================== #
 
 def run_style_transfer_no_st(cnn, normalization_mean, normalization_std,
-                             video_frames, style_img, input_frames, num_steps=200,
+                             video_frames, style_img, input_frames, output_path, num_steps=200,
                              style_weight=1000000, content_weight=1):
     """Run the style transfer without stabilizer"""
 
@@ -166,13 +167,14 @@ def run_style_transfer_no_st(cnn, normalization_mean, normalization_std,
 
         # a last correction...
         input_frame.data.clamp_(0, 1)
+        store_frame(output_path, index, input_frame) # Store frame
         resulting_frames.append(input_frame)
 
     return resulting_frames
 
 
 def run_style_transfer_st1(cnn, normalization_mean, normalization_std,
-                           video_frames, style_img, input_frames, num_steps=200,
+                           video_frames, style_img, input_frames, output_path, num_steps=200,
                            style_weight=1000000, content_weight=1, previous_weight=0.5):
     """Run the style transfer with the first stabilizer"""
 
@@ -247,6 +249,7 @@ def run_style_transfer_st1(cnn, normalization_mean, normalization_std,
 
         # a last correction...
         input_frame.data.clamp_(0, 1)
+        store_frame(output_path, index, input_frame)  # Store frame
         resulting_frames.append(input_frame)
 
     return resulting_frames

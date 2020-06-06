@@ -44,20 +44,15 @@ def generate_input_frames(video_frames: list):
     return input_frames
 
 
-def store_frames (output_path: str,
-                  frames: list,
-                  output_frame_name: str = "frame"):
+def store_frame (output_path: str,
+                 index: int,
+                 frame):
 
     # Check if frames folder exists. If not, create it.
     if not os.path.exists(os.path.join(output_path, 'frames')):
         os.makedirs(os.path.join(output_path, 'frames'))
 
-    count = 1
-
-    for frame in frames:
-        image = frame.cpu().clone()  # we clone the tensor to not do changes on it
-        image = image.squeeze(0)  # remove the fake batch dimension
-        image = unloader(image).convert('RGB')
-        plt.imshow(image)
-        image.save(os.path.join(output_path, 'frames/{}{}.jpg'.format(output_frame_name, count)))
-        count += 1
+    image = frame.cpu().clone()  # we clone the tensor to not do changes on it
+    image = image.squeeze(0)  # remove the fake batch dimension
+    image = unloader(image).convert('RGB')
+    image.save(os.path.join(output_path, 'frames/frame{}.jpg'.format(index)))
