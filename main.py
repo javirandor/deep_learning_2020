@@ -1,5 +1,5 @@
 import argparse
-from utils import video_loader, image_loader, generate_input_frames, store_frames
+from utils import video_loader, image_loader, generate_input_frames
 import torchvision.models as models
 from constants import device, cnn_normalization_std, cnn_normalization_mean
 from model import run_style_transfer_no_st, run_style_transfer_st1
@@ -35,12 +35,13 @@ def main(in_video: str,
         transformed_frames = run_style_transfer_no_st(cnn=cnn,
                                                       normalization_mean=cnn_normalization_mean,
                                                       normalization_std=cnn_normalization_std,
-                                                      video_frames=video_frames[:2],
+                                                      video_frames=video_frames,
                                                       style_img=style_image,
-                                                      input_frames=input_frames[:2],
+                                                      input_frames=input_frames,
                                                       num_steps=num_steps,
                                                       style_weight=style_weight,
-                                                      content_weight=content_weight)
+                                                      content_weight=content_weight,
+                                                      output_path=output_path)
 
     elif stabilizer == 1:
         transformed_frames = run_style_transfer_st1(cnn=cnn,
@@ -52,10 +53,8 @@ def main(in_video: str,
                                                     num_steps=num_steps,
                                                     style_weight=style_weight,
                                                     content_weight=content_weight,
-                                                    previous_weight=previous_weight)
-
-    # Store frames
-    store_frames(output_path, transformed_frames)
+                                                    previous_weight=previous_weight,
+                                                    output_path=output_path)
 
     print("Style video transfer successfully completed.")
 
@@ -67,7 +66,7 @@ if __name__ == "__main__":
     parser.add_argument("-s", "--stabilizer", type=int, required=False, choices=[0, 1, 2], default=0)
     parser.add_argument("-ns", "--num_steps", type=int, required=False, default=200)
     parser.add_argument("-cw", "--content_weight", type=int, required=False, default=1)
-    parser.add_argument("-sw", "--style_weight", type=int, required=False, default=1000000)
+    parser.add_argument("-sw", "--style_weight", type=int, required=False, default=100000)
     parser.add_argument("-pw", "--previous_weight", type=float, required=False, default=0.5)
 
     args = parser.parse_args()
