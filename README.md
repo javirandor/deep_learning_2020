@@ -34,3 +34,11 @@ Also there are other optional arguments
 --style_weight
 --previous_weight
 ```
+
+## Generate video
+
+A video can be generated using `create_video.py` script. This is a sample execution:
+
+```
+python3 create_video.py -i ./data/output/frames/ -if frame_def_nost -o ./data/output/videos -of def_nost -fp 10
+```
