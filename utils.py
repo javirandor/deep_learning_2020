@@ -59,5 +59,5 @@ def store_frames (output_path: str,
         image = image.squeeze(0)  # remove the fake batch dimension
         image = unloader(image).convert('RGB')
         plt.imshow(image)
-        image.save(output_path + 'frames/{}{}.jpg'.format(output_frame_name, count))
+        image.save(output_path + '/frames/{}{}.jpg'.format(output_frame_name, count))
         count += 1
