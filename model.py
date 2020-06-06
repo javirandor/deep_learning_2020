@@ -78,7 +78,7 @@ def get_style_model_and_losses(cnn, normalization_mean, normalization_std, stabi
             model.add_module("style_loss_{}".format(i), style_loss)
             style_losses.append(style_loss)
 
-        if name in previous_layers and stabilizer == 1:
+        if name in previous_layers and stabilizer == 1 and previous_styled_img!=None:
             # add previous loss:
             target = model(previous_styled_img).detach()
             previous_loss = PreviousLoss(target)
