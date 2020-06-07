@@ -177,6 +177,7 @@ def run_style_transfer_no_st(cnn, normalization_mean, normalization_std,
 def run_style_transfer_st1(cnn, normalization_mean, normalization_std,
                            video_frames, style_img, input_frames, output_path, output_filename,
                            num_steps, style_weight, content_weight, previous_weight):
+
     """Run the style transfer with the first stabilizer"""
 
     resulting_frames = []
