@@ -191,8 +191,8 @@ def run_style_transfer_st(stabilizer, cnn, normalization_mean, normalization_std
         else:
             previous_styled_img = resulting_frames[index - 1]
 
-        if stabilizer == 2:
-            previous_styled_img = generate_next_frame(previous_styled_img, flows[index - 1])
+            if stabilizer == 2:
+                previous_styled_img = generate_next_frame(previous_styled_img, flows[index - 1])
 
         model, style_losses, content_losses, previous_losses = get_style_model_and_losses(cnn=cnn,
                                                                                           normalization_mean=normalization_mean,
