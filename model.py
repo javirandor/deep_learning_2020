@@ -1,10 +1,10 @@
-import torch
 import torch.nn as nn
 from constants import device, content_layers_default, style_layers_default, previous_layers_default
 import copy
 import torch.optim as optim
 from loss import StyleLoss, ContentLoss, PreviousLoss
 from utils import store_frame
+from optical_flow import generate_next_frame
 
 
 # ================================== NORMALIZATION ================================== #
@@ -174,9 +174,9 @@ def run_style_transfer_no_st(cnn, normalization_mean, normalization_std,
     return resulting_frames
 
 
-def run_style_transfer_st1(cnn, normalization_mean, normalization_std,
+def run_style_transfer_st(stabilizer, cnn, normalization_mean, normalization_std,
                            video_frames, style_img, input_frames, output_path, output_filename,
-                           num_steps, style_weight, content_weight, previous_weight):
+                           num_steps, style_weight, content_weight, previous_weight, flows=None):
 
     """Run the style transfer with the first stabilizer"""
 
@@ -190,6 +190,9 @@ def run_style_transfer_st1(cnn, normalization_mean, normalization_std,
             previous_styled_img = None
         else:
             previous_styled_img = resulting_frames[index - 1]
+
+        if stabilizer == 2:
+            previous_styled_img = generate_next_frame(previous_styled_img, flows[index - 1])
 
         model, style_losses, content_losses, previous_losses = get_style_model_and_losses(cnn=cnn,
                                                                                           normalization_mean=normalization_mean,

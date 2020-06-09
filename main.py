@@ -1,8 +1,9 @@
 import argparse
-from utils import video_loader, image_loader, generate_input_frames
+from utils import video_loader, image_loader, generate_input_frames, read_frames, generate_flows
 import torchvision.models as models
 from constants import device, cnn_normalization_std, cnn_normalization_mean
-from model import run_style_transfer_no_st, run_style_transfer_st1
+from model import run_style_transfer_no_st, run_style_transfer_st
+from optical_flow import read_frames, generate_flows
 
 
 def main(in_video: str,
@@ -26,6 +27,12 @@ def main(in_video: str,
     assert style_image.size() == video_frames[0].size(), \
         "Input video and style image must have the same dimensions"
 
+    flows = None
+
+    if (stabilizer == 2):  ## If we are using optical flow, generate flow between frames
+        in_frames = read_frames(in_video)
+        flows = generate_flows(in_frames)
+
     # Load pre-trained VGG model
     cnn = models.vgg19(pretrained=True).features.to(device).eval()
 
@@ -46,19 +53,21 @@ def main(in_video: str,
                                                       output_path=output_path,
                                                       output_filename=output_filename)
 
-    elif stabilizer == 1:
-        transformed_frames = run_style_transfer_st1(cnn=cnn,
-                                                    normalization_mean=cnn_normalization_mean,
-                                                    normalization_std=cnn_normalization_std,
-                                                    video_frames=video_frames,
-                                                    style_img=style_image,
-                                                    input_frames=input_frames,
-                                                    num_steps=num_steps,
-                                                    style_weight=style_weight,
-                                                    content_weight=content_weight,
-                                                    previous_weight=previous_weight,
-                                                    output_path=output_path,
-                                                    output_filename=output_filename)
+    elif stabilizer == 1 or stabilizer == 2:
+        transformed_frames = run_style_transfer_st(stabilizer=stabilizer,
+                                                   cnn=cnn,
+                                                   normalization_mean=cnn_normalization_mean,
+                                                   normalization_std=cnn_normalization_std,
+                                                   video_frames=video_frames,
+                                                   style_img=style_image,
+                                                   input_frames=input_frames,
+                                                   num_steps=num_steps,
+                                                   style_weight=style_weight,
+                                                   content_weight=content_weight,
+                                                   previous_weight=previous_weight,
+                                                   output_path=output_path,
+                                                   output_filename=output_filename,
+                                                   flows=flows)
 
     print("Style video transfer successfully completed.")
 

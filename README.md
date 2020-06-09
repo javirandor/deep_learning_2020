@@ -40,5 +40,5 @@ Also there are other optional arguments
 A video can be generated using `create_video.py` script. This is a sample execution:
 
 ```
-python3 create_video.py -i ./data/output/frames/ -if frame_def_nost -o ./data/output/videos -of def_nost -fp 10
+python3 create_video.py -i ./data/output/frames/ -if video2_def_st1_pw2_ -o ./data/output/videos -of video2_def_st1_pw2_ -fp 10
 ```
