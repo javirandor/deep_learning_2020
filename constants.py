@@ -18,4 +18,4 @@ cnn_normalization_std = torch.tensor([0.229, 0.224, 0.225]).to(device)
 # Arguments for the model. Desired depth layers to compute each loss.
 content_layers_default = ['conv_4']
 style_layers_default = ['conv_1', 'conv_2', 'conv_3', 'conv_4', 'conv_5']
-previous_layers_default = ['conv_4', 'conv_5']
+previous_layers_default = ['conv_5']

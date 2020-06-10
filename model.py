@@ -5,6 +5,7 @@ import torch.optim as optim
 from loss import StyleLoss, ContentLoss, PreviousLoss
 from utils import store_frame
 from optical_flow import generate_next_frame
+import sys
 
 
 # ================================== NORMALIZATION ================================== #
@@ -45,6 +46,8 @@ def get_style_model_and_losses(cnn, normalization_mean, normalization_std, stabi
     # to put in modules that are supposed to be activated sequentially
     model = nn.Sequential(normalization)
 
+    print('Before layers')
+
     i = 0  # increment every time we see a conv
     for layer in cnn.children():
         if isinstance(layer, nn.Conv2d):
@@ -65,6 +68,8 @@ def get_style_model_and_losses(cnn, normalization_mean, normalization_std, stabi
 
         model.add_module(name, layer)
 
+        print('Befoore layers 2')
+
         if name in content_layers:
             # add content loss:
             target = model(content_img).detach()
@@ -79,9 +84,11 @@ def get_style_model_and_losses(cnn, normalization_mean, normalization_std, stabi
             model.add_module("style_loss_{}".format(i), style_loss)
             style_losses.append(style_loss)
 
-        if name in previous_layers and stabilizer == 1 and previous_styled_img is not None:
+        if name in previous_layers and (stabilizer == 1 or stabilizer == 2) and previous_styled_img is not None:
             target = model(previous_styled_img).detach()
+            print('target created')
             previous_loss = PreviousLoss(target)
+            print('previous loss created')
             model.add_module("previous_loss_{}".format(i), previous_loss)
             previous_losses.append(previous_loss)
 
@@ -94,7 +101,7 @@ def get_style_model_and_losses(cnn, normalization_mean, normalization_std, stabi
         model = model[:(i + 1)]
         return model, style_losses, content_losses
 
-    elif stabilizer == 1:
+    elif stabilizer == 1 or stabilizer == 2:
         for i in range(len(model) - 1, -1, -1):
             if isinstance(model[i], ContentLoss) or isinstance(model[i], StyleLoss) or isinstance(model[i], PreviousLoss):
                 break
@@ -116,7 +123,6 @@ def get_input_optimizer(input_img):
 def run_style_transfer_no_st(cnn, normalization_mean, normalization_std,
                              video_frames, style_img, input_frames, output_path, output_filename,
                              num_steps, style_weight, content_weight):
-
     """Run the style transfer without stabilizer"""
 
     resulting_frames = []
@@ -175,9 +181,8 @@ def run_style_transfer_no_st(cnn, normalization_mean, normalization_std,
 
 
 def run_style_transfer_st(stabilizer, cnn, normalization_mean, normalization_std,
-                           video_frames, style_img, input_frames, output_path, output_filename,
-                           num_steps, style_weight, content_weight, previous_weight, flows=None):
-
+                          video_frames, style_img, input_frames, output_path, output_filename,
+                          num_steps, style_weight, content_weight, previous_weight, flows=None):
     """Run the style transfer with the first stabilizer"""
 
     resulting_frames = []
@@ -190,14 +195,14 @@ def run_style_transfer_st(stabilizer, cnn, normalization_mean, normalization_std
             previous_styled_img = None
         else:
             previous_styled_img = resulting_frames[index - 1]
-
             if stabilizer == 2:
                 previous_styled_img = generate_next_frame(previous_styled_img, flows[index - 1])
+                store_frame(output_path, index, 'predicted', previous_styled_img)  # Store frame
 
         model, style_losses, content_losses, previous_losses = get_style_model_and_losses(cnn=cnn,
                                                                                           normalization_mean=normalization_mean,
                                                                                           normalization_std=normalization_std,
-                                                                                          stabilizer=1,
+                                                                                          stabilizer=stabilizer,
                                                                                           style_img=style_img,
                                                                                           content_img=original_frame,
                                                                                           previous_styled_img=previous_styled_img)
@@ -222,6 +227,7 @@ def run_style_transfer_st(stabilizer, cnn, normalization_mean, normalization_std
                     content_score += cl.loss
 
                 if index != 0:
+
                     for pl in previous_losses:
                         previous_score += pl.loss
 

@@ -41,6 +41,7 @@ def main(in_video: str,
 
     # Run Style Transfer
     if stabilizer == 0:
+        print('Running style_transfer_nost')
         transformed_frames = run_style_transfer_no_st(cnn=cnn,
                                                       normalization_mean=cnn_normalization_mean,
                                                       normalization_std=cnn_normalization_std,
@@ -54,6 +55,7 @@ def main(in_video: str,
                                                       output_filename=output_filename)
 
     elif stabilizer == 1 or stabilizer == 2:
+        print('Running style_transfer_st')
         transformed_frames = run_style_transfer_st(stabilizer=stabilizer,
                                                    cnn=cnn,
                                                    normalization_mean=cnn_normalization_mean,
@@ -93,8 +95,6 @@ if __name__ == "__main__":
     style_weight = args.style_weight
     previous_weight = args.previous_weight
     output_file = args.output_filename
-
-    print(style_weight)
 
     # Run main
     main(input_video, style_img, output_path, stabilizer, num_steps, style_weight, content_weight, previous_weight, output_file)

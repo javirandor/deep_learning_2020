@@ -1,31 +1,31 @@
 import cv2
 import numpy as np
 from PIL import Image
-from constants import loader, device, unloader
+from constants import device, unloader
 import torch
+from constants import loader
+from utils import store_frame
 
 
 def generate_next_frame(prev_frame,
                         flow):
-    new_frames = None
+
+    # Previous frame to array
+    prev_frame = unloader(prev_frame.squeeze().detach().cpu())
+    prev_frame = np.uint8(prev_frame)
 
     h = flow.shape[0]
     w = flow.shape[1]
     flow[:, :, 0] += np.arange(w)
     flow[:, :, 1] += np.arange(h)[:, np.newaxis]
 
-    prev_frame = prev_frame.cpu().clone()  # we clone the tensor to not do changes on it
-    prev_frame = prev_frame.squeeze(0)  # remove the fake batch dimension
-    prev_frame = unloader(prev_frame)
-    prev_frame = np.float32(prev_frame)
+    prediction = cv2.remap(prev_frame, flow, None, cv2.INTER_LINEAR)  # Type array
 
-    frame_pred = cv2.remap(prev_frame, flow, None, cv2.INTER_LINEAR)
+    # Prediction to tensor in CUDA
+    prediction = loader(unloader(prediction))
+    new_frame = prediction.unsqueeze(0).to(device)
 
-    image = Image.fromarray((frame_pred * 255).astype(np.uint8))
-    image = loader(image).unsqueeze(0)
-
-    new_frames = image.to(device, torch.float)
-    return new_frames
+    return new_frame
 
 
 def generate_flows(frames):
@@ -51,17 +51,8 @@ def read_frames(video_path):
 
     while (vc.isOpened()):
         ret, frame = vc.read()
-
         if not ret:
             break
-        f = Image.fromarray(frame)
-        f = f.resize((227, 128), Image.ANTIALIAS)
-        f = loader(f).squeeze(0)
-        f = f.to(device, torch.float)
-        f = f.cpu().detach().numpy()
-        f = np.moveaxis(f, 0, -1)
-        f = np.uint8(f)
-
-        frames.append(f)
-    vc.release()
+        frame = cv2.resize(frame, (910, 512))
+        frames.append(frame)
     return frames
