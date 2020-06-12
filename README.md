@@ -12,15 +12,16 @@ However, independent treatment of frames result on inconsistency between frames 
 
 To solve this issue, we have tested two different approaches to increase consistency between consecutive frames.
 
-## Previous frame loss
+## Previous frame loss - Stabilizer 1
 In this first approach that can be executed using the argument `--stabilizer 1`, we add a new term to the loss function. It will compute the mean square difference between the previous stylized frame and the current one.
 This way, we can penalize difference between two consecutive stylized frames. The weight of this loss term cannot be very high since it would at some point prevent difference between frames.
 
-## Optical Flow
-To be documented.
+## Optical Flow - Stabilizer 2
+To improve stabilizer 1 limitation for moving objects we implemented an approach using Optical Flow. First of all, we compute the flow of moving objects between frames.
+Then, these flows are used to compute a prediction of the current frame using the previous styled one. Like this, we avoid minimizing the difference with previous position of
+objects and remove artifacts.
 
 ## Execution
-
 There are two different scripts in this repository. The first, will generate the styled frames and the second one will generate a video from them with
 the desired frame rate. This last one will be explained in **generate video** section.
 
