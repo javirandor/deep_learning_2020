@@ -10,7 +10,7 @@ To use this approach on videos, every frame will be considered as a single image
 
 However, independent treatment of frames result on inconsistency between frames as many research has already pointed out [[1]](https://arxiv.org/abs/1807.01197).
 
-To solve this issue, we have tested two different approaches to increase consistency between consecutive frames.
+To solve this issue, we have tested two different approaches to increase consistency between consecutive frames. More information about these approaches are found in `slides.pdf`. They are briefly summed up in the next two sections.
 
 ## Previous frame loss - Stabilizer 1
 In this first approach that can be executed using the argument `--stabilizer 1`, we add a new term to the loss function. It will compute the mean square difference between the previous stylized frame and the current one.
