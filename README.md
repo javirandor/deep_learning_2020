@@ -29,7 +29,7 @@ To generate the styled frames we will need an input video and some style image. 
 
 This is a sample execution:
 ```
-python main.py --video data/input/video1.mp4 --style data/input/default-style.jpg --outpath data/output --stabilizer 1 --style_weight 100000 --content_weight 1 --num_steps 150 --previous_weight 1 --output_filename video1_col_st1_pw1_2_
+python main.py --video data/input/video1.mp4 --style data/input/colorful-style.jpg --outpath data/output --stabilizer 1 --style_weight 100000 --content_weight 1 --num_steps 150 --previous_weight 1 --output_filename video1_col_st1_pw1_2_
 ```
 
 The arguments used can be changed to match your needs:
