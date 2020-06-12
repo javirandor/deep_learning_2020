@@ -25,7 +25,7 @@ def main(in_video: str,
 
     # Check they have same size
     assert style_image.size() == video_frames[0].size(), \
-        "Input video and style image must have the same dimensions"
+        "Input video and style image must have the same proportions"
 
     flows = None
 
@@ -82,7 +82,7 @@ if __name__ == "__main__":
     parser.add_argument("-ns", "--num_steps", type=int, required=False, default=200)
     parser.add_argument("-cw", "--content_weight", type=int, required=False, default=1)
     parser.add_argument("-sw", "--style_weight", type=int, required=False, default=1000000)
-    parser.add_argument("-pw", "--previous_weight", type=float, required=False, default=0.5)
+    parser.add_argument("-pw", "--previous_weight", type=float, required=False, default=1)
     parser.add_argument("-of", "--output_filename", type=str, required=False, default='frame')
 
     args = parser.parse_args()

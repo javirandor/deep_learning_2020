@@ -46,8 +46,6 @@ def get_style_model_and_losses(cnn, normalization_mean, normalization_std, stabi
     # to put in modules that are supposed to be activated sequentially
     model = nn.Sequential(normalization)
 
-    print('Before layers')
-
     i = 0  # increment every time we see a conv
     for layer in cnn.children():
         if isinstance(layer, nn.Conv2d):
@@ -67,8 +65,6 @@ def get_style_model_and_losses(cnn, normalization_mean, normalization_std, stabi
             raise RuntimeError('Unrecognized layer: {}'.format(layer.__class__.__name__))
 
         model.add_module(name, layer)
-
-        print('Befoore layers 2')
 
         if name in content_layers:
             # add content loss:

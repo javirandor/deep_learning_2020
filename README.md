@@ -21,24 +21,42 @@ To be documented.
 
 ## Execution
 
+There are two different scripts in this repository. The first, will generate the styled frames and the second one will generate a video from them with
+the desired frame rate. This last one will be explained in **generate video** section.
 
-To execute use
+To generate the styled frames we will need an input video and some style image. It is important that they have the same proportions.
+
+This is a sample execution:
 ```
- python3 main.py --video ./data/input/video-short.mp4 --style ./data/input/video-style.jpg --outpath ./data/output -s 0
+python main.py --video data/input/video1.mp4 --style data/input/default-style.jpg --outpath data/output --stabilizer 1 --style_weight 100000 --content_weight 1 --num_steps 150 --previous_weight 1 --output_filename video1_col_st1_pw1_2_
 ```
 
-Also there are other optional arguments
-```
---num_steps
---content_weight
---style_weight
---previous_weight
-```
+The arguments used can be changed to match your needs:
+* `--video`: path to the input video.
+* `--style`: path to the style image.
+* `--outpath`: path to the folder where styled frames will be stored.
+* `--stabilizer`: method for time stabilization. Options are: `0` which uses independent styling, `1` where difference with previous styled frame is used as constraint, `2` the difference is now computed between the current frame and the previous styled one with
+optical flow applied to predict the current styled frame. (More information about stabilizers can be found in the slides).
+* `--style_weight`: default 1000000. Weight for the style image in the loss.
+* `--content_weight`: default 1. Weight for the current original frame in the loss.
+* `--style_weight`: default 1. Weight for the previous styled frame. Only applies for stabilizers 1 and 2.
+* `--num_steps`: default 200. Number of epochs for each frame.
+* `--output_filename`: prefix for the output frames. An index will be appended at the end. Therefore, we recommend using a name that doesn't end with a number. You will use this name for the generate video script.
+
 
 ## Generate video
 
-A video can be generated using `create_video.py` script. This is a sample execution:
+A video can be generated using `create_video.py` script. Sample execution:
+
+You will need to define the 
 
 ```
-python3 create_video.py -i ./data/output/frames/ -if video2_def_st1_pw2_ -o ./data/output/videos -of video2_def_st1_pw2_ -fp 10
+python3 create_video.py -i ./data/output/frames/ -if video1_col_st1_pw1_2_ -o ./data/output/videos -of video1_col_st1_pw1_2_ -fp 10
 ```
+
+The arguments used can be changed to match your needs:
+* `-i`: folder where frames are stored. Matches `--outpath` in previous step.
+* `-if`: input frames prefix which matches `--output_filename` argument in previous step.
+* `-o`: path to the folder where the video will be stored.
+* `-of`: name for the output video.
+* `-fp`: frames per second.
