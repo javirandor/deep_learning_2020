@@ -1,8 +1,8 @@
 # Style Transfer in Videos
-Repository for Deep Learning Final Project - UPF 2019/20
-Javier Rando Ramírez
-Eduard Vergés Franch
-Marcel Closes Pagan
+Repository for Deep Learning Final Project - UPF 2019/20<br>
+Javier Rando Ramírez<br>
+Eduard Vergés Franch<br>
+Marcel Closes Pagan<br>
 
 
 The main goal of this project is implementing style transfer using Neural Networks on videos. As a starting point, the [PyTorch implementation for style transfer on images](https://pytorch.org/tutorials/advanced/neural_style_tutorial.html) has been used.
@@ -48,8 +48,6 @@ optical flow applied to predict the current styled frame. (More information abou
 ## Generate video
 
 A video can be generated using `create_video.py` script. Sample execution:
-
-You will need to define the 
 
 ```
 python3 create_video.py -i ./data/output/frames/ -if video1_col_st1_pw1_2_ -o ./data/output/videos -of video1_col_st1_pw1_2_ -fp 10
